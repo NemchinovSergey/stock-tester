@@ -1,0 +1,6 @@
+﻿<TICKER>;<PER>;<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>
+
+TICKER - string
+PER - 1, 5, 10, 15, 30, 60, 1 day, 1 week, 1 month
+DATE -
+TIME -
