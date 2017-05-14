@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +20,13 @@ public class QuotesList {
     private List<Quote> quotes;
     private String fileName;
     private String separator;
-    private DateFormat dateFormat;
-    private DateFormat timeFormat;
+    private DateTimeFormatter dateFormat;
+    private DateTimeFormatter timeFormat;
 
     public QuotesList(String datePattern, String timePattern) {
         quotes = new ArrayList<>();
-        dateFormat = new SimpleDateFormat(datePattern);
-        timeFormat = new SimpleDateFormat(timePattern);
+        dateFormat = DateTimeFormatter.ofPattern(datePattern);
+        timeFormat = DateTimeFormatter.ofPattern(timePattern);
     }
 
     public int loadFromFile(String fileName) throws IOException {
@@ -35,8 +37,7 @@ public class QuotesList {
             String line = reader.readLine();
             if (line.toUpperCase().contains("TICKER") || line.toUpperCase().contains("DATE")) {
                 separator = detectSeparator(line);
-            }
-            else {
+            } else {
                 Quote quote = parseQuote(line);
                 quotes.add(quote);
                 count++;
@@ -62,18 +63,44 @@ public class QuotesList {
         String[] lines = str.split(separator);
 
         Quote quote = new Quote();
-        quote.setTicker(lines[0]);
-        quote.setPeriod(Integer.parseInt(lines[1]));
-        quote.setDate(dateFormat.parse(lines[2]));
-        quote.setTime(timeFormat.parse(lines[3]));
 
-        String doubleValue = prepareDoubleValue(lines[4]);
+        String value = lines[0];
+        quote.setTicker(value);
 
+        value = lines[1];
+        quote.setPeriod(Integer.parseInt(value));
+
+        value = lines[2];
+        quote.setDate(LocalDate.from(dateFormat.parse(value)));
+
+        value = lines[3];
+        quote.setTime(LocalTime.from(timeFormat.parse(value)));
+
+        quote.updateDateTime();
+
+        /*System.out.println(String.format("Date: %s, Time: %s", lines[2], lines[3]));
+        System.out.println(String.format("Parsed date: %s, time %s", quote.getDate().toString(), quote.getTime().toString()));
+        System.out.println(String.format("Parsed dateTime: %s", quote.getDateTime().toString()));*/
+
+        value = lines[4];
+        String doubleValue = prepareDoubleValue(value);
         quote.setOpen(Double.parseDouble(doubleValue));
-        quote.setHigh(Double.parseDouble(prepareDoubleValue(lines[5])));
-        quote.setLow(Double.parseDouble(prepareDoubleValue(lines[6])));
-        quote.setClose(Double.parseDouble(prepareDoubleValue(lines[7])));
-        quote.setVol(Double.parseDouble(prepareDoubleValue(lines[8])));
+
+        value = lines[5];
+        doubleValue = prepareDoubleValue(value);
+        quote.setHigh(Double.parseDouble(prepareDoubleValue(doubleValue)));
+
+        value = lines[6];
+        doubleValue = prepareDoubleValue(value);
+        quote.setLow(Double.parseDouble(prepareDoubleValue(doubleValue)));
+
+        value = lines[7];
+        doubleValue = prepareDoubleValue(value);
+        quote.setClose(Double.parseDouble(prepareDoubleValue(doubleValue)));
+
+        value = lines[8];
+        doubleValue = prepareDoubleValue(value);
+        quote.setVol(Double.parseDouble(prepareDoubleValue(doubleValue)));
 
         return quote;
     }
@@ -84,5 +111,33 @@ public class QuotesList {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public int getStartIndex(LocalDateTime startDate) {
+        for (int i = 0; i < quotes.size(); i++) {
+            Quote quote = quotes.get(i);
+            if (quote.getDateTime().isEqual(startDate) || quote.getDateTime().isAfter(startDate)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getEndIndex(LocalDateTime endDate) {
+        for (int i = quotes.size() - 1; i >= 0; i--) {
+            Quote quote = quotes.get(i);
+            if (quote.getDateTime().isEqual(endDate) || quote.getDateTime().isBefore(endDate)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int size() {
+        return quotes.size();
+    }
+
+    public Quote get(int index) {
+        return quotes.get(index);
     }
 }

@@ -1,14 +1,19 @@
 package entities;
 
+import org.joda.time.DateTime;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
-
-
 
 public class Quote {
     private String ticker;
     private int period;
-    private Date date;
-    private Date time;
+    private LocalDateTime dateTime;
+    private LocalDate date;
+    private LocalTime time;
     private double open;
     private double high;
     private double low;
@@ -18,7 +23,7 @@ public class Quote {
     public Quote() {
     }
 
-    public Quote(String ticker, int period, Date date, Date time, double open, double high, double low, double close, double vol) {
+    public Quote(String ticker, int period, LocalDate date, LocalTime time, double open, double high, double low, double close, double vol) {
         this.ticker = ticker;
         this.period = period;
         this.date = date;
@@ -28,6 +33,7 @@ public class Quote {
         this.low = low;
         this.close = close;
         this.vol = vol;
+        updateDateTime();
     }
 
     public String getTicker() {
@@ -46,19 +52,23 @@ public class Quote {
         this.period = period;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public Date getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 
@@ -100,5 +110,25 @@ public class Quote {
 
     public void setVol(double vol) {
         this.vol = vol;
+    }
+
+    public void updateDateTime() {
+        this.dateTime = LocalDateTime.of(date, time);
+    }
+
+    @Override
+    public String toString() {
+        return "Quote{" +
+                "ticker='" + ticker + '\'' +
+                ", period=" + period +
+                ", dateTime=" + dateTime +
+                ", date=" + date +
+                ", time=" + time +
+                ", open=" + open +
+                ", high=" + high +
+                ", low=" + low +
+                ", close=" + close +
+                ", vol=" + vol +
+                '}';
     }
 }
