@@ -1,5 +1,7 @@
 package entities;
 
+import utils.ParsingUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -98,7 +100,7 @@ public class QuotesList {
         doubleValue = prepareDoubleValue(value);
         quote.setClose(Double.parseDouble(prepareDoubleValue(doubleValue)));
 
-        value = lines[8];
+        value = lines[8].replaceAll(ParsingUtils.FINAM_SEPARATORS, "");
         doubleValue = prepareDoubleValue(value);
         quote.setVol(Double.parseDouble(prepareDoubleValue(doubleValue)));
 
