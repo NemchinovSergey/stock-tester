@@ -24,6 +24,12 @@ public class Main {
         */
 
         Tester tester = new Tester(new StrategyEmpty(), quotes);
-        tester.startTest(LocalDateTime.of(2016, 5, 1, 0, 0), LocalDateTime.now());
+        try {
+            tester.startTest(LocalDateTime.of(2017, 5, 1, 0, 0), LocalDateTime.now());
+        }
+        catch (Exception e) {
+            System.out.println("Testing is interrupted! Exception was happened:");
+            e.printStackTrace();
+        }
     }
 }
