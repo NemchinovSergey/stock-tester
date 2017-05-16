@@ -31,6 +31,10 @@ public class QuotesList {
         timeFormat = DateTimeFormatter.ofPattern(timePattern);
     }
 
+    // Sample of input data:
+    // <TICKER>;<PER>;<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>
+    // Si;60;20150105;100000;56.854.0000000;60.696.0000000;56.854.0000000;60.487.0000000;245.605
+    // Si;60;20150105;110000;60.487.0000000;60.499.0000000;59.302.0000000;59.472.0000000;97.944
     public int loadFromFile(String fileName) throws IOException {
         quotes.clear();
         int count = 0;
@@ -59,9 +63,6 @@ public class QuotesList {
     }
 
     private Quote parseQuote(String str) throws ParseException {
-        // <TICKER>;<PER>;<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>
-        // Si;60;20150105;100000;56.854.0000000;60.696.0000000;56.854.0000000;60.487.0000000;245.605
-        // Si;60;20150105;110000;60.487.0000000;60.499.0000000;59.302.0000000;59.472.0000000;97.944
         String[] lines = str.split(separator);
 
         Quote quote = new Quote();
@@ -79,10 +80,6 @@ public class QuotesList {
         quote.setTime(LocalTime.from(timeFormat.parse(value)));
 
         quote.updateDateTime();
-
-        /*System.out.println(String.format("Date: %s, Time: %s", lines[2], lines[3]));
-        System.out.println(String.format("Parsed date: %s, time %s", quote.getDate().toString(), quote.getTime().toString()));
-        System.out.println(String.format("Parsed dateTime: %s", quote.getDateTime().toString()));*/
 
         value = lines[4];
         String doubleValue = prepareDoubleValue(value);
