@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ParsingUtils {
+    public final static String FINAM_SEPARATORS = "[,.;\t ]";
+
     public static String prepareDoubleValue(String doubleValue) {
 
         // 60 487.0000000 => 60487.0000000
@@ -32,7 +34,7 @@ public class ParsingUtils {
     public static String detectSeparator(String header) {
         // <TICKER>;<PER>;<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>
         // , . ; \t ' '
-        Pattern p = Pattern.compile(">[,.;\t ]<");
+        Pattern p = Pattern.compile(">" + FINAM_SEPARATORS + "<");
         Matcher m = p.matcher(header);
         if (m.find()) {
             String separator = m.group();
